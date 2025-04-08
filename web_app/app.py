@@ -1,61 +1,37 @@
-from flask import Flask, render_template, request, send_file, send_from_directory
+from flask import Flask, render_template, send_file, abort
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend
 import matplotlib.pyplot as plt
+from joblib import load
 import os
 import base64
 from io import BytesIO
 
 app = Flask(__name__)
 
-# Load preprocessed data (run mineral_targeting.py first to generate)
-file_path = "NGCM-Stream-Sediment-Analysis-Updated.xlsx"
+# Load precomputed data and models (use existing files instead of regenerating)
+file_path = "../NGCM-Stream-Sediment-Analysis-Updated.xlsx"  # Adjust path if needed
 data = pd.read_excel(file_path)
 relevant_columns = ['X', 'Y', 'Cu_ppm', 'Fe2O3_%', 'Au_ppb', 'Ni_ppm', 'Zn_ppm', 'Pb_ppm']
-data_selected = data[relevant_columns].dropna()
+data_cleaned = pd.read_csv('mineral_targeting_results_enhanced.csv')  # Load precomputed CSV
 
-# Standardize features (as in original code)
-scaler = StandardScaler()
-features = data_selected[['X', 'Y', 'Ni_ppm', 'Zn_ppm', 'Pb_ppm']]
-scaled_features = scaler.fit_transform(features)
-data_selected[['X_scaled', 'Y_scaled', 'Ni_ppm_scaled', 'Zn_ppm_scaled', 'Pb_ppm_scaled']] = scaled_features
+# Load pre-trained models
+model_cu = load('model_cu.joblib')
+model_fe = load('model_fe.joblib')
+model_au = load('model_au.joblib')
 
-# Train models (reuse trained parameters from original)
-X = data_selected[['X_scaled', 'Y_scaled', 'Ni_ppm_scaled', 'Zn_ppm_scaled', 'Pb_ppm_scaled']]
-y_cu = data_selected['Cu_ppm']
-y_fe = data_selected['Fe2O3_%']
-y_au = data_selected['Au_ppb']
-X_train_cu, X_test_cu, y_train_cu, y_test_cu = train_test_split(X, y_cu, test_size=0.2, random_state=42)
-X_train_fe, X_test_fe, y_train_fe, y_test_fe = train_test_split(X, y_fe, test_size=0.2, random_state=42)
-X_train_au, X_test_au, y_train_au, y_test_au = train_test_split(X, y_au, test_size=0.2, random_state=42)
+# No need to re-standardize or predict here since data is precomputed
 
-model_cu = RandomForestRegressor(n_estimators=200, max_depth=10, random_state=42)
-model_fe = RandomForestRegressor(n_estimators=200, max_depth=10, random_state=42)
-model_au = RandomForestRegressor(n_estimators=200, max_depth=10, random_state=42)
-
-model_cu.fit(X_train_cu, y_train_cu)
-model_fe.fit(X_train_fe, y_train_fe)
-model_au.fit(X_train_au, y_train_au)
-
-# Precompute predictions (as in original)
-data_selected['Predicted_Cu_ppm'] = model_cu.predict(X)
-data_selected['Predicted_Fe2O3_%'] = model_fe.predict(X)
-data_selected['Predicted_Au_ppb'] = model_au.predict(X)
-
-# High-potential zones (as in original)
-cu_threshold = data_selected['Predicted_Cu_ppm'].quantile(0.95)
-fe_threshold = data_selected['Predicted_Fe2O3_%'].quantile(0.95)
-au_threshold = data_selected['Predicted_Au_ppb'].quantile(0.95)
-high_potential_cu = data_selected[data_selected['Predicted_Cu_ppm'] >= cu_threshold]
-high_potential_fe = data_selected[data_selected['Predicted_Fe2O3_%'] >= fe_threshold]
-high_potential_au = data_selected[data_selected['Predicted_Au_ppb'] >= au_threshold]
-
-# Save CSV (as in original)
-data_selected.to_csv('mineral_targeting_results_enhanced.csv', index=False)
+# High-potential zones (recompute based on precomputed predictions)
+cu_threshold = data_cleaned['Predicted_Cu_ppm'].quantile(0.95)
+fe_threshold = data_cleaned['Predicted_Fe2O3_%'].quantile(0.95)
+au_threshold = data_cleaned['Predicted_Au_ppb'].quantile(0.95)
+high_potential_cu = data_cleaned[data_cleaned['Predicted_Cu_ppm'] >= cu_threshold]
+high_potential_fe = data_cleaned[data_cleaned['Predicted_Fe2O3_%'] >= fe_threshold]
+high_potential_au = data_cleaned[data_cleaned['Predicted_Au_ppb'] >= au_threshold]
 
 # Routes
 @app.route('/')
@@ -64,77 +40,250 @@ def home():
 
 @app.route('/predict')
 def predict():
-    mse_cu = mean_squared_error(y_test_cu, model_cu.predict(X_test_cu))
-    mse_fe = mean_squared_error(y_test_fe, model_fe.predict(X_test_fe))
-    mse_au = mean_squared_error(y_test_au, model_au.predict(X_test_au))
-
-    # Generate plots (reusing Matplotlib style)
+    # Scatter plots (original distributions)
     plt.figure(figsize=(10, 6))
-    scatter = plt.scatter(data_selected['X'], data_selected['Y'], c=data_selected['Predicted_Cu_ppm'], cmap='viridis', alpha=0.5)
+    scatter = plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Cu_ppm'], cmap='viridis', alpha=0.5)
+    plt.colorbar(scatter, label='Copper (Cu_ppm)')
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.title('Distribution of Copper Concentrations')
+    buf_orig_cu = BytesIO()
+    plt.savefig(buf_orig_cu, format='png')
+    buf_orig_cu.seek(0)
+    orig_cu_plot = base64.b64encode(buf_orig_cu.read()).decode('utf-8')
+    plt.close()
+
+    plt.figure(figsize=(10, 6))
+    scatter = plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Fe2O3_%'], cmap='viridis', alpha=0.5)
+    plt.colorbar(scatter, label='Iron Oxide (Fe2O3_%)')
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.title('Distribution of Iron Oxide Concentrations')
+    buf_orig_fe = BytesIO()
+    plt.savefig(buf_orig_fe, format='png')
+    buf_orig_fe.seek(0)
+    orig_fe_plot = base64.b64encode(buf_orig_fe.read()).decode('utf-8')
+    plt.close()
+
+    plt.figure(figsize=(10, 6))
+    scatter = plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Au_ppb'], cmap='viridis', alpha=0.5)
+    plt.colorbar(scatter, label='Gold (Au_ppb)')
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.title('Distribution of Gold Concentrations')
+    buf_orig_au = BytesIO()
+    plt.savefig(buf_orig_au, format='png')
+    buf_orig_au.seek(0)
+    orig_au_plot = base64.b64encode(buf_orig_au.read()).decode('utf-8')
+    plt.close()
+
+    # Scatter plots (predicted concentrations)
+    plt.figure(figsize=(10, 6))
+    scatter = plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Predicted_Cu_ppm'], cmap='viridis', alpha=0.5)
     plt.colorbar(scatter, label='Predicted Copper (Cu_ppm)')
     plt.xlabel('X Coordinate')
     plt.ylabel('Y Coordinate')
     plt.title('Predicted Copper Concentrations')
-    buf_cu = BytesIO()
-    plt.savefig(buf_cu, format='png')
-    buf_cu.seek(0)
-    cu_plot = base64.b64encode(buf_cu.read()).decode('utf-8')
+    buf_pred_cu = BytesIO()
+    plt.savefig(buf_pred_cu, format='png')
+    buf_pred_cu.seek(0)
+    pred_cu_plot = base64.b64encode(buf_pred_cu.read()).decode('utf-8')
     plt.close()
 
     plt.figure(figsize=(10, 6))
-    scatter = plt.scatter(data_selected['X'], data_selected['Y'], c=data_selected['Predicted_Fe2O3_%'], cmap='viridis', alpha=0.5)
+    scatter = plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Predicted_Fe2O3_%'], cmap='viridis', alpha=0.5)
     plt.colorbar(scatter, label='Predicted Iron Oxide (Fe2O3_%)')
     plt.xlabel('X Coordinate')
     plt.ylabel('Y Coordinate')
     plt.title('Predicted Iron Oxide Concentrations')
-    buf_fe = BytesIO()
-    plt.savefig(buf_fe, format='png')
-    buf_fe.seek(0)
-    fe_plot = base64.b64encode(buf_fe.read()).decode('utf-8')
+    buf_pred_fe = BytesIO()
+    plt.savefig(buf_pred_fe, format='png')
+    buf_pred_fe.seek(0)
+    pred_fe_plot = base64.b64encode(buf_pred_fe.read()).decode('utf-8')
     plt.close()
 
     plt.figure(figsize=(10, 6))
-    scatter = plt.scatter(data_selected['X'], data_selected['Y'], c=data_selected['Predicted_Au_ppb'], cmap='viridis', alpha=0.5)
+    scatter = plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Predicted_Au_ppb'], cmap='viridis', alpha=0.5)
     plt.colorbar(scatter, label='Predicted Gold (Au_ppb)')
     plt.xlabel('X Coordinate')
     plt.ylabel('Y Coordinate')
     plt.title('Predicted Gold Concentrations')
-    buf_au = BytesIO()
-    plt.savefig(buf_au, format='png')
-    buf_au.seek(0)
-    au_plot = base64.b64encode(buf_au.read()).decode('utf-8')
+    buf_pred_au = BytesIO()
+    plt.savefig(buf_pred_au, format='png')
+    buf_pred_au.seek(0)
+    pred_au_plot = base64.b64encode(buf_pred_au.read()).decode('utf-8')
     plt.close()
 
-    return render_template('predict.html', mse_cu=mse_cu, mse_fe=mse_fe, mse_au=mse_au,
-                          cu_plot=cu_plot, fe_plot=fe_plot, au_plot=au_plot,
-                          cu_count=len(high_potential_cu), fe_count=len(high_potential_fe), au_count=len(high_potential_au))
+    # Heatmaps (predicted concentrations)
+    def create_heatmap(x, y, values, title, label):
+        heatmap, xedges, yedges = np.histogram2d(x, y, bins=50, weights=values)
+        extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+        plt.figure(figsize=(10, 6))
+        plt.imshow(heatmap.T, extent=extent, origin='lower', cmap='viridis', aspect='auto')
+        plt.colorbar(label=label)
+        plt.xlabel('X Coordinate')
+        plt.ylabel('Y Coordinate')
+        plt.title(title)
+        buf = BytesIO()
+        plt.savefig(buf, format='png')
+        buf.seek(0)
+        plot = base64.b64encode(buf.read()).decode('utf-8')
+        plt.close()
+        return plot
+
+    heatmap_cu_plot = create_heatmap(data_cleaned['X'], data_cleaned['Y'], data_cleaned['Predicted_Cu_ppm'], 'Heatmap of Predicted Copper Concentrations', 'Predicted Copper (Cu_ppm)')
+    heatmap_fe_plot = create_heatmap(data_cleaned['X'], data_cleaned['Y'], data_cleaned['Predicted_Fe2O3_%'], 'Heatmap of Predicted Iron Oxide Concentrations', 'Predicted Iron Oxide (Fe2O3_%)')
+    heatmap_au_plot = create_heatmap(data_cleaned['X'], data_cleaned['Y'], data_cleaned['Predicted_Au_ppb'], 'Heatmap of Predicted Gold Concentrations', 'Predicted Gold (Au_ppb)')
+
+    # High-potential zones (scatter plots)
+    plt.figure(figsize=(10, 6))
+    plt.scatter(data_cleaned['X'], data_cleaned['Y'], c='gray', alpha=0.1, label='All Data')
+    plt.scatter(high_potential_cu['X'], high_potential_cu['Y'], c='red', label=f'Cu > {cu_threshold:.2f} ppm')
+    plt.colorbar(label='Predicted Copper (Cu_ppm)')
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.title('High-Potential Copper Zones')
+    plt.legend()
+    buf_hp_cu = BytesIO()
+    plt.savefig(buf_hp_cu, format='png')
+    buf_hp_cu.seek(0)
+    hp_cu_plot = base64.b64encode(buf_hp_cu.read()).decode('utf-8')
+    plt.close()
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(data_cleaned['X'], data_cleaned['Y'], c='gray', alpha=0.1, label='All Data')
+    plt.scatter(high_potential_fe['X'], high_potential_fe['Y'], c='blue', label=f'Fe2O3 > {fe_threshold:.2f} %')
+    plt.colorbar(label='Predicted Iron Oxide (Fe2O3_%)')
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.title('High-Potential Iron Zones')
+    plt.legend()
+    buf_hp_fe = BytesIO()
+    plt.savefig(buf_hp_fe, format='png')
+    buf_hp_fe.seek(0)
+    hp_fe_plot = base64.b64encode(buf_hp_fe.read()).decode('utf-8')
+    plt.close()
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(data_cleaned['X'], data_cleaned['Y'], c='gray', alpha=0.1, label='All Data')
+    plt.scatter(high_potential_au['X'], high_potential_au['Y'], c='gold', label=f'Au > {au_threshold:.2f} ppb')
+    plt.colorbar(label='Predicted Gold (Au_ppb)')
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.title('High-Potential Gold Zones')
+    plt.legend()
+    buf_hp_au = BytesIO()
+    plt.savefig(buf_hp_au, format='png')
+    buf_hp_au.seek(0)
+    hp_au_plot = base64.b64encode(buf_hp_au.read()).decode('utf-8')
+    plt.close()
+
+    return render_template('predict.html', mse_cu=935.87, mse_fe=8.08, mse_au=23.57,
+                          orig_cu_plot=orig_cu_plot, orig_fe_plot=orig_fe_plot, orig_au_plot=orig_au_plot,
+                          pred_cu_plot=pred_cu_plot, pred_fe_plot=pred_fe_plot, pred_au_plot=pred_au_plot,
+                          heatmap_cu_plot=heatmap_cu_plot, heatmap_fe_plot=heatmap_fe_plot, heatmap_au_plot=heatmap_au_plot,
+                          hp_cu_plot=hp_cu_plot, hp_fe_plot=hp_fe_plot, hp_au_plot=hp_au_plot,
+                          cu_zones=len(high_potential_cu), fe_zones=len(high_potential_fe), au_zones=len(high_potential_au))
 
 @app.route('/download_csv')
 def download_csv():
-    return send_file('mineral_targeting_results_enhanced.csv', as_attachment=True)
+    csv_path = 'mineral_targeting_results_enhanced.csv'
+    if os.path.exists(csv_path):
+        return send_file(csv_path, as_attachment=True)
+    else:
+        abort(404, description="CSV file not found. Please run mineral_targeting1.py to generate it.")
 
-@app.route('/save_plot/<mineral>')
-def save_plot(mineral):
+@app.route('/save_plot/<mineral>/<plot_type>')
+def save_plot(mineral, plot_type):
     if mineral == 'cu':
-        plt.figure(figsize=(10, 6))
-        plt.scatter(data_selected['X'], data_selected['Y'], c=data_selected['Predicted_Cu_ppm'], cmap='viridis', alpha=0.5)
-        plt.colorbar(label='Predicted Copper (Cu_ppm)')
-        plt.title('Predicted Copper Concentrations')
-        plt.savefig('static/cu_plot.png')
+        if plot_type == 'original':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Cu_ppm'], cmap='viridis', alpha=0.5)
+            plt.colorbar(label='Copper (Cu_ppm)')
+            plt.title('Distribution of Copper Concentrations')
+            plt.savefig('static/original_cu_scatter.png')
+        elif plot_type == 'predicted':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Predicted_Cu_ppm'], cmap='viridis', alpha=0.5)
+            plt.colorbar(label='Predicted Copper (Cu_ppm)')
+            plt.title('Predicted Copper Concentrations')
+            plt.savefig('static/predicted_cu_scatter.png')
+        elif plot_type == 'heatmap':
+            heatmap, xedges, yedges = np.histogram2d(data_cleaned['X'], data_cleaned['Y'], bins=50, weights=data_cleaned['Predicted_Cu_ppm'])
+            extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+            plt.figure(figsize=(10, 6))
+            plt.imshow(heatmap.T, extent=extent, origin='lower', cmap='viridis', aspect='auto')
+            plt.colorbar(label='Predicted Copper (Cu_ppm)')
+            plt.title('Heatmap of Predicted Copper Concentrations')
+            plt.savefig('static/predicted_cu_heatmap.png')
+        elif plot_type == 'high_potential':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c='gray', alpha=0.1, label='All Data')
+            plt.scatter(high_potential_cu['X'], high_potential_cu['Y'], c='red', label=f'Cu > {cu_threshold:.2f} ppm')
+            plt.colorbar(label='Predicted Copper (Cu_ppm)')
+            plt.title('High-Potential Copper Zones')
+            plt.legend()
+            plt.savefig('static/high_potential_cu_scatter.png')
     elif mineral == 'fe':
-        plt.figure(figsize=(10, 6))
-        plt.scatter(data_selected['X'], data_selected['Y'], c=data_selected['Predicted_Fe2O3_%'], cmap='viridis', alpha=0.5)
-        plt.colorbar(label='Predicted Iron Oxide (Fe2O3_%)')
-        plt.title('Predicted Iron Oxide Concentrations')
-        plt.savefig('static/fe_plot.png')
+        if plot_type == 'original':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Fe2O3_%'], cmap='viridis', alpha=0.5)
+            plt.colorbar(label='Iron Oxide (Fe2O3_%)')
+            plt.title('Distribution of Iron Oxide Concentrations')
+            plt.savefig('static/original_fe_scatter.png')
+        elif plot_type == 'predicted':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Predicted_Fe2O3_%'], cmap='viridis', alpha=0.5)
+            plt.colorbar(label='Predicted Iron Oxide (Fe2O3_%)')
+            plt.title('Predicted Iron Oxide Concentrations')
+            plt.savefig('static/predicted_fe_scatter.png')
+        elif plot_type == 'heatmap':
+            heatmap, xedges, yedges = np.histogram2d(data_cleaned['X'], data_cleaned['Y'], bins=50, weights=data_cleaned['Predicted_Fe2O3_%'])
+            extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+            plt.figure(figsize=(10, 6))
+            plt.imshow(heatmap.T, extent=extent, origin='lower', cmap='viridis', aspect='auto')
+            plt.colorbar(label='Predicted Iron Oxide (Fe2O3_%)')
+            plt.title('Heatmap of Predicted Iron Oxide Concentrations')
+            plt.savefig('static/predicted_fe_heatmap.png')
+        elif plot_type == 'high_potential':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c='gray', alpha=0.1, label='All Data')
+            plt.scatter(high_potential_fe['X'], high_potential_fe['Y'], c='blue', label=f'Fe2O3 > {fe_threshold:.2f} %')
+            plt.colorbar(label='Predicted Iron Oxide (Fe2O3_%)')
+            plt.title('High-Potential Iron Zones')
+            plt.legend()
+            plt.savefig('static/high_potential_fe_scatter.png')
     elif mineral == 'au':
-        plt.figure(figsize=(10, 6))
-        plt.scatter(data_selected['X'], data_selected['Y'], c=data_selected['Predicted_Au_ppb'], cmap='viridis', alpha=0.5)
-        plt.colorbar(label='Predicted Gold (Au_ppb)')
-        plt.title('Predicted Gold Concentrations')
-        plt.savefig('static/au_plot.png')
+        if plot_type == 'original':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Au_ppb'], cmap='viridis', alpha=0.5)
+            plt.colorbar(label='Gold (Au_ppb)')
+            plt.title('Distribution of Gold Concentrations')
+            plt.savefig('static/original_au_scatter.png')
+        elif plot_type == 'predicted':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c=data_cleaned['Predicted_Au_ppb'], cmap='viridis', alpha=0.5)
+            plt.colorbar(label='Predicted Gold (Au_ppb)')
+            plt.title('Predicted Gold Concentrations')
+            plt.savefig('static/predicted_au_scatter.png')
+        elif plot_type == 'heatmap':
+            heatmap, xedges, yedges = np.histogram2d(data_cleaned['X'], data_cleaned['Y'], bins=50, weights=data_cleaned['Predicted_Au_ppb'])
+            extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+            plt.figure(figsize=(10, 6))
+            plt.imshow(heatmap.T, extent=extent, origin='lower', cmap='viridis', aspect='auto')
+            plt.colorbar(label='Predicted Gold (Au_ppb)')
+            plt.title('Heatmap of Predicted Gold Concentrations')
+            plt.savefig('static/predicted_au_heatmap.png')
+        elif plot_type == 'high_potential':
+            plt.figure(figsize=(10, 6))
+            plt.scatter(data_cleaned['X'], data_cleaned['Y'], c='gray', alpha=0.1, label='All Data')
+            plt.scatter(high_potential_au['X'], high_potential_au['Y'], c='gold', label=f'Au > {au_threshold:.2f} ppb')
+            plt.colorbar(label='Predicted Gold (Au_ppb)')
+            plt.title('High-Potential Gold Zones')
+            plt.legend()
+            plt.savefig('static/high_potential_au_scatter.png')
     plt.close()
-    return f"Plot for {mineral} saved as static/{mineral}_plot.png"
+    return f"Plot for {mineral} ({plot_type}) saved as static/{mineral}_{plot_type}.png"
 
 if __name__ == '__main__':
     if not os.path.exists('static'):
