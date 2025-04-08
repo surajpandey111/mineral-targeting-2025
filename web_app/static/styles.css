@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe); /* Attractive gradient background */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: auto;
+}
+
+.welcome-container {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white for readability */
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    width: 90%;
+}
+
+header h1 {
+    color: #ff4500; /* Attractive orange */
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.developer-section {
+    margin: 20px 0;
+}
+
+.developer-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #ff4500;
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #2e8b57; /* Attractive green */
+    font-size: 1.8em;
+}
+
+p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #555;
+}
+
+.hackathon-info {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f0fff0; /* Light green background for info */
+    border-left: 5px solid #2e8b57;
+}
+
+.hackathon-info h3 {
+    color: #2e8b57;
+    font-size: 1.5em;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #ff4500;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #e03e00; /* Darker orange on hover */
+}

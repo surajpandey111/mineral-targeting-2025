@@ -1,8 +1,31 @@
 <!DOCTYPE html>
-<html>
-<head><title>Mineral Targeting</title></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mineral Targeting 2025</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
 <body>
-    <h1>Welcome to Geochemical AI for Mineral Targeting</h1>
-    <a href="/predict">View Predictions</a>
+    <div class="welcome-container">
+        <header>
+            <h1>Welcome to Mineral Targeting 2025</h1>
+            <div class="developer-section">
+                <img src="{{ url_for('static', filename='suraj.jpg') }}" alt="Suraj Kumar Pandey" class="developer-photo">
+                <h2>Developed by: Suraj Kumar Pandey</h2>
+                <p>Role: Developer / Scientist / Student</p>
+            </div>
+        </header>
+        <section class="hackathon-info">
+            <h3>About IndiaAI Hackathon</h3>
+            <p>
+                This project is part of the prestigious IndiaAI Hackathon 2025, a celebration of innovation, technology, and collaboration. 
+                With a mission to harness AI for societal good, this hackathon inspires creativity, fosters learning, and drives positive impact 
+                in mineral resource exploration. Together, we are shaping a sustainable future with cutting-edge solutions!
+            </p>
+        </section>
+        <a href="/predict" class="btn">Explore Predictions</a>
+    </div>
 </body>
 </html>
