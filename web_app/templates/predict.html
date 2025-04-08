@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<html>
-<head><title>Predictions</title></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mineral Targeting Predictions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles1.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
 <body>
-    <h1>Prediction Results</h1>
-    <p>MSE for Copper: {{ mse_cu }}</p>
-    <p>MSE for Iron: {{ mse_fe }}</p>
-    <p>MSE for Gold: {{ mse_au }}</p>
-    <p>High-Potential Copper Zones: {{ cu_zones }}</p>
-    <p>High-Potential Iron Zones: {{ fe_zones }}</p>
-    <p>High-Potential Gold Zones: {{ au_zones }}</p>
-    <h2>Plots</h2>
-    <h3>Copper</h3>
-    <img src="data:image/png;base64,{{ orig_cu_plot }}" alt="Original Copper Distribution"><br>
-    <img src="data:image/png;base64,{{ pred_cu_plot }}" alt="Predicted Copper Concentrations"><br>
-    <img src="data:image/png;base64,{{ heatmap_cu_plot }}" alt="Heatmap of Predicted Copper"><br>
-    <img src="data:image/png;base64,{{ hp_cu_plot }}" alt="High-Potential Copper Zones"><br>
-    <h3>Iron</h3>
-    <img src="data:image/png;base64,{{ orig_fe_plot }}" alt="Original Iron Oxide Distribution"><br>
-    <img src="data:image/png;base64,{{ pred_fe_plot }}" alt="Predicted Iron Oxide Concentrations"><br>
-    <img src="data:image/png;base64,{{ heatmap_fe_plot }}" alt="Heatmap of Predicted Iron"><br>
-    <img src="data:image/png;base64,{{ hp_fe_plot }}" alt="High-Potential Iron Zones"><br>
-    <h3>Gold</h3>
-    <img src="data:image/png;base64,{{ orig_au_plot }}" alt="Original Gold Distribution"><br>
-    <img src="data:image/png;base64,{{ pred_au_plot }}" alt="Predicted Gold Concentrations"><br>
-    <img src="data:image/png;base64,{{ heatmap_au_plot }}" alt="Heatmap of Predicted Gold"><br>
-    <img src="data:image/png;base64,{{ hp_au_plot }}" alt="High-Potential Gold Zones"><br>
-    <br><a href="/download_csv">Download CSV</a><br>
-    <a href="/save_plot/cu/original">Save Copper Original</a><br>
-    <a href="/save_plot/cu/predicted">Save Copper Predicted</a><br>
-    <a href="/save_plot/cu/heatmap">Save Copper Heatmap</a><br>
-    <a href="/save_plot/cu/high_potential">Save Copper High-Potential</a><br>
-    <a href="/save_plot/fe/original">Save Iron Original</a><br>
-    <a href="/save_plot/fe/predicted">Save Iron Predicted</a><br>
-    <a href="/save_plot/fe/heatmap">Save Iron Heatmap</a><br>
-    <a href="/save_plot/fe/high_potential">Save Iron High-Potential</a><br>
-    <a href="/save_plot/au/original">Save Gold Original</a><br>
-    <a href="/save_plot/au/predicted">Save Gold Predicted</a><br>
-    <a href="/save_plot/au/heatmap">Save Gold Heatmap</a><br>
-    <a href="/save_plot/au/high_potential">Save Gold High-Potential</a>
+    <div class="prediction-container">
+        <h1>Mineral Targeting Predictions</h1>
+        <p>Mean Squared Error: Cu = {{ mse_cu }}, Fe = {{ mse_fe }}, Au = {{ mse_au }}</p>
+        <p>High-Potential Zones: Cu = {{ cu_zones }}, Fe = {{ fe_zones }}, Au = {{ au_zones }}</p>
+
+        <h2>Original Distributions</h2>
+        <img src="data:image/png;base64,{{ orig_cu_plot }}" alt="Original Cu Scatter">
+        <img src="data:image/png;base64,{{ orig_fe_plot }}" alt="Original Fe Scatter">
+        <img src="data:image/png;base64,{{ orig_au_plot }}" alt="Original Au Scatter">
+
+        <h2>Predicted Concentrations</h2>
+        <img src="data:image/png;base64,{{ pred_cu_plot }}" alt="Predicted Cu Scatter">
+        <img src="data:image/png;base64,{{ pred_fe_plot }}" alt="Predicted Fe Scatter">
+        <img src="data:image/png;base64,{{ pred_au_plot }}" alt="Predicted Au Scatter">
+
+        <h2>Heatmaps</h2>
+        <img src="data:image/png;base64,{{ heatmap_cu_plot }}" alt="Cu Heatmap">
+        <img src="data:image/png;base64,{{ heatmap_fe_plot }}" alt="Fe Heatmap">
+        <img src="data:image/png;base64,{{ heatmap_au_plot }}" alt="Au Heatmap">
+
+        <h2>High-Potential Zones</h2>
+        <img src="data:image/png;base64,{{ hp_cu_plot }}" alt="High-Potential Cu Scatter">
+        <img src="data:image/png;base64,{{ hp_fe_plot }}" alt="High-Potential Fe Scatter">
+        <img src="data:image/png;base64,{{ hp_au_plot }}" alt="High-Potential Au Scatter">
+
+        <div class="download-links">
+            <a href="/download_csv" class="btn">Download CSV Results</a>
+            <a href="/download_report" class="btn">Download Submission Report</a>
+        </div>
+    </div>
 </body>
 </html>

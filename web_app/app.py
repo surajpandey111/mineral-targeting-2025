@@ -192,7 +192,13 @@ def download_csv():
         return send_file(csv_path, as_attachment=True)
     else:
         abort(404, description="CSV file not found. Please run mineral_targeting1.py to generate it.")
-
+@app.route('/download_report')
+def download_report():
+    report_path = 'submission_report.txt'
+    if os.path.exists(report_path):
+        return send_file(report_path, as_attachment=True, download_name='submission_report.txt')
+    else:
+        abort(404, description="Report file not found. Please run mineral_targeting1.py to generate it.")
 @app.route('/save_plot/<mineral>/<plot_type>')
 def save_plot(mineral, plot_type):
     if mineral == 'cu':
