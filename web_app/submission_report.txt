@@ -1,0 +1,23 @@
+Mineral Targeting Analysis Report
+================================
+
+Date: 2025-04-08
+
+Methodology:
+- Used Random Forest Regressor to predict copper, iron, and gold concentrations.
+- Incorporated additional features: Ni_ppm, Zn_ppm, Pb_ppm, scaled with StandardScaler.
+- Optimized model with n_estimators=200 and max_depth=10.
+- Identified high-potential zones using the top 5% of predicted values.
+- Visualized data with scatter plots and heatmaps.
+
+Model Performance:
+- Mean Squared Error for Copper: 935.87
+- Mean Squared Error for Iron: 8.08
+- Mean Squared Error for Gold: 23.57
+
+High-Potential Zones:
+- Copper Zones (>66.57 ppm): 501 locations
+- Iron Zones (>10.62 %): 501 locations
+- Gold Zones (>4.14 ppb): 501 locations
+
+Data saved to: mineral_targeting_results_enhanced.csv

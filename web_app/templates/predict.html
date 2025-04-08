@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><title>Predictions</title></head>
+<body>
+    <h1>Prediction Results</h1>
+    <p>MSE for Copper: {{ mse_cu }}</p>
+    <p>MSE for Iron: {{ mse_fe }}</p>
+    <p>MSE for Gold: {{ mse_au }}</p>
+    <p>High-Potential Copper Zones: {{ cu_zones }}</p>
+    <p>High-Potential Iron Zones: {{ fe_zones }}</p>
+    <p>High-Potential Gold Zones: {{ au_zones }}</p>
+    <h2>Plots</h2>
+    <h3>Copper</h3>
+    <img src="data:image/png;base64,{{ orig_cu_plot }}" alt="Original Copper Distribution"><br>
+    <img src="data:image/png;base64,{{ pred_cu_plot }}" alt="Predicted Copper Concentrations"><br>
+    <img src="data:image/png;base64,{{ heatmap_cu_plot }}" alt="Heatmap of Predicted Copper"><br>
+    <img src="data:image/png;base64,{{ hp_cu_plot }}" alt="High-Potential Copper Zones"><br>
+    <h3>Iron</h3>
+    <img src="data:image/png;base64,{{ orig_fe_plot }}" alt="Original Iron Oxide Distribution"><br>
+    <img src="data:image/png;base64,{{ pred_fe_plot }}" alt="Predicted Iron Oxide Concentrations"><br>
+    <img src="data:image/png;base64,{{ heatmap_fe_plot }}" alt="Heatmap of Predicted Iron"><br>
+    <img src="data:image/png;base64,{{ hp_fe_plot }}" alt="High-Potential Iron Zones"><br>
+    <h3>Gold</h3>
+    <img src="data:image/png;base64,{{ orig_au_plot }}" alt="Original Gold Distribution"><br>
+    <img src="data:image/png;base64,{{ pred_au_plot }}" alt="Predicted Gold Concentrations"><br>
+    <img src="data:image/png;base64,{{ heatmap_au_plot }}" alt="Heatmap of Predicted Gold"><br>
+    <img src="data:image/png;base64,{{ hp_au_plot }}" alt="High-Potential Gold Zones"><br>
+    <br><a href="/download_csv">Download CSV</a><br>
+    <a href="/save_plot/cu/original">Save Copper Original</a><br>
+    <a href="/save_plot/cu/predicted">Save Copper Predicted</a><br>
+    <a href="/save_plot/cu/heatmap">Save Copper Heatmap</a><br>
+    <a href="/save_plot/cu/high_potential">Save Copper High-Potential</a><br>
+    <a href="/save_plot/fe/original">Save Iron Original</a><br>
+    <a href="/save_plot/fe/predicted">Save Iron Predicted</a><br>
+    <a href="/save_plot/fe/heatmap">Save Iron Heatmap</a><br>
+    <a href="/save_plot/fe/high_potential">Save Iron High-Potential</a><br>
+    <a href="/save_plot/au/original">Save Gold Original</a><br>
+    <a href="/save_plot/au/predicted">Save Gold Predicted</a><br>
+    <a href="/save_plot/au/heatmap">Save Gold Heatmap</a><br>
+    <a href="/save_plot/au/high_potential">Save Gold High-Potential</a>
+</body>
+</html>
