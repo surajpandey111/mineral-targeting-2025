@@ -13,9 +13,7 @@ from io import BytesIO
 app = Flask(__name__)
 
 # Load precomputed data and models (use existing files instead of regenerating)
-file_path = "../NGCM-Stream-Sediment-Analysis-Updated.xlsx"  # Adjust path if needed
-data = pd.read_excel(file_path)
-relevant_columns = ['X', 'Y', 'Cu_ppm', 'Fe2O3_%', 'Au_ppb', 'Ni_ppm', 'Zn_ppm', 'Pb_ppm']
+
 data_cleaned = pd.read_csv('mineral_targeting_results_enhanced.csv')  # Load precomputed CSV
 
 # Load pre-trained models
