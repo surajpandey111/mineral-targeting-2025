@@ -13,7 +13,11 @@ from io import BytesIO
 app = Flask(__name__)
 
 # Load precomputed data and models (use existing files instead of regenerating)
-
+BASE_DIR = os.path.dirname(__file__)
+data_cleaned = pd.read_csv(os.path.join(BASE_DIR, 'mineral_targeting_results_enhanced.csv'))
+model_cu = load(os.path.join(BASE_DIR, 'model_cu.joblib'))
+model_fe = load(os.path.join(BASE_DIR, 'model_fe.joblib'))
+model_au = load(os.path.join(BASE_DIR, 'model_au.joblib'))
 data_cleaned = pd.read_csv('mineral_targeting_results_enhanced.csv')  # Load precomputed CSV
 
 # Load pre-trained models
