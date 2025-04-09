@@ -55,7 +55,7 @@ Additional data: `NGCM-Stream-Sediment-Analysis-Updated.xlsx` (processed and inc
 - **Live URL**: [https://mineral-targeting-2025.onrender.com/](https://mineral-targeting-2025.onrender.com/)
 - **Project Report**: Included as `submission_report.txt` in the repository.
 - **Submission Deadline**: 12th May 2025
-- **Contact**: Email `fellow3.gpai-india@meity.gov.in` or `sudheer.reddy@meity.gov.in` with subject "Queries for IndiaAI Hackathon on Mineral Targeting - [Your Team's Name]"
+- **Contact**: Email `fellow3.gpai-india@meity.gov.in` or `sudheer.reddy@meity.gov.in` with subject "Queries for IndiaAI Hackathon on Mineral Targeting"
 
 ## Prizes
 - First Prize: INR 10 Lakhs
