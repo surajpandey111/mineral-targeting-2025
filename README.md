@@ -3,47 +3,23 @@
 This project is a submission for the **IndiaAI Hackathon on Mineral Targeting 2025**, a collaboration between IndiaAI (under the Digital India Corporation, MeitY) and the Geological Survey of India (GSI). Developed by **Suraj Kumar Pandey** (Developer/Scientist/Student), the initiative leverages Artificial Intelligence (AI) and Machine Learning (ML) to identify new potential areas for exploration of critical minerals (e.g., REE, Ni-PGE, Copper) and other commodities (e.g., Diamond, Iron, Manganese, Gold) within a 39,000 sq. km area in Karnataka and Andhra Pradesh, India.
 
 ## Project Overview
-- **Theme**: Identification of concealed and deep-seated mineralized bodies with depth modeling, using AI/ML algorithms for data cleaning, integration, modeling, validation, and generating mineral predictive maps.
-- **Objective**: Enhance the effectiveness of critical mineral exploration by integrating multi-parametric geoscience data (geology, geophysics, geochemistry, remote sensing, borehole data, etc.).
+- **Theme**: Identification of concealed and deep-seated mineralized bodies with depth modeling, using AI/ML algorithms for data processing, modeling, validation, and generating mineral predictive maps.
+- **Objective**: Enhance the effectiveness of critical mineral exploration by integrating multi-parametric geoscience data.
 - **Live Demo**: [https://mineral-targeting-2025.onrender.com/](https://mineral-targeting-2025.onrender.com/)
 
 ## Features
-- Predicts Copper (Cu_ppm), Iron Oxide (Fe2O3_%), and Gold (Au_ppb) concentrations using Random Forest Regressor.
-- Generates scatter plots, heatmaps, and high-potential zone visualizations.
-- Web app with downloadable CSV results (`mineral_targeting_results_enhanced.csv`) and submission report (`submission_report.txt`).
-- Attractive welcome page with developer details and hackathon info.
+- Predicts mineral concentrations (e.g., Copper, Iron, Gold) using advanced ML techniques.
+- Generates visualizations including predictive maps, heatmaps, and high-potential zone indicators.
+- Web-based interface with downloadable results and reports.
+- Attractive welcome page with developer details and hackathon context.
 
-## Installation
-1. Clone the repository: `git clone https://github.com/surajpandey111/mineral-targeting-2025.git`
-2. Install dependencies: `pip install -r web_app/requirements.txt`
-3. Navigate to web_app: `cd web_app`
-4. Generate precomputed data: `python mineral_targeting1.py` (if needed)
-5. Run locally: `python app.py`
-
-## Usage
-- Visit `http://localhost:5000/` for the welcome page.
-- Visit `http://localhost:5000/predict` for predictions and visualizations.
-- Download results via `/download_csv` and report via `/download_report`.
-- Save plots via `/save_plot/<mineral>/<plot_type>`.
-
-## Deployment
-- **Hosted on Render**: [https://mineral-targeting-2025.onrender.com/](https://mineral-targeting-2025.onrender.com/)
-- **Build Command**: `pip install -r requirements.txt`
-- **Start Command**: `python app.py`
-- **Root Directory**: `/web_app`
+## Technical Details
+- The solution is deployed on a cloud platform, utilizing a custom-built web application.
+- Incorporates preprocessed geoscience data and trained ML models for predictive analytics.
+- Visualizations are dynamically generated and accessible via the live demo.
 
 ## Datasets
-This project utilizes the following datasets provided by GSI on AIKosh:
-- Multi-Layer Geological Map of Karnataka and Andhra Pradesh (25K & 50K Scale)
-- Geochronology, Geomorphology, and Lineament Features Maps
-- Geochemical Data Points (NGCM)
-- Aerogeophysical Magnetic and Spectrometric Data
-- Ground Gravity Data
-- Mineral Exploration Blocks and ASTER Mineral Maps
-- Technical reports on mineral exploration
-- [Access Datasets Here](https://aikosh.indiaai.gov.in/home)
-
-Additional data: `NGCM-Stream-Sediment-Analysis-Updated.xlsx` (processed and included).
+This project utilizes a curated selection of geoscience datasets provided by GSI through the AIKosh platform, including geological maps, geochemical data, geophysical data, and exploration reports. Specific datasets are processed and integrated to support the predictive modeling.
 
 ## Credits
 - **Developed by**: Suraj Kumar Pandey
@@ -53,9 +29,9 @@ Additional data: `NGCM-Stream-Sediment-Analysis-Updated.xlsx` (processed and inc
 ## Submission for IndiaAI Hackathon 2025
 - **Source Code URL**: [https://github.com/surajpandey111/mineral-targeting-2025](https://github.com/surajpandey111/mineral-targeting-2025)
 - **Live URL**: [https://mineral-targeting-2025.onrender.com/](https://mineral-targeting-2025.onrender.com/)
-- **Project Report**: Included as `submission_report.txt` in the repository.
+- **Project Report**: Included as `submission_report.txt` in the repository (available to judges upon request).
 - **Submission Deadline**: 12th May 2025
-- **Contact**: Email `fellow3.gpai-india@meity.gov.in` or `sudheer.reddy@meity.gov.in` with subject "Queries for IndiaAI Hackathon on Mineral Targeting"
+- **Contact**: Email `fellow3.gpai-india@meity.gov.in` or `sudheer.reddy@meity.gov.in` with subject "Queries for IndiaAI Hackathon on Mineral Targeting - Suraj Kumar Pandey"
 
 ## Prizes
 - First Prize: INR 10 Lakhs
