@@ -34,6 +34,7 @@ This project is a submission for the **IndiaAI Hackathon on Mineral Targeting 20
 - **Root Directory**: `/web_app`
 ## Static Page Deployemnt
 - **Live Demo**: [React js static page of mineral-targeting-result](https://mineral-targeting-static.onrender.com/)
+- **React Code repositories of static deployement**:[React js static page of mineral-targeting-result](https://github.com/surajpandey111/mineral-targeting-static)
 ## Datasets
 This project utilizes the following datasets provided by GSI on AIKosh:
 - Multi-Layer Geological Map of Karnataka and Andhra Pradesh (25K & 50K Scale)
