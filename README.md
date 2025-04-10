@@ -6,6 +6,7 @@ This project is a submission for the **IndiaAI Hackathon on Mineral Targeting 20
 - **Theme**: Identification of concealed and deep-seated mineralized bodies with depth modeling, using AI/ML algorithms for data cleaning, integration, modeling, validation, and generating mineral predictive maps.
 - **Objective**: Enhance the effectiveness of critical mineral exploration by integrating multi-parametric geoscience data (geology, geophysics, geochemistry, remote sensing, borehole data, etc.).
 - **Live Demo**: [https://mineral-targeting-2025.onrender.com/](https://mineral-targeting-2025.onrender.com/)
+- **Live Demo**: [React js static page of mineral-targeting-result](https://mineral-targeting-static.onrender.com/)
 
 ## Features
 - Predicts Copper (Cu_ppm), Iron Oxide (Fe2O3_%), and Gold (Au_ppb) concentrations using Random Forest Regressor.
@@ -31,7 +32,8 @@ This project is a submission for the **IndiaAI Hackathon on Mineral Targeting 20
 - **Build Command**: `pip install -r requirements.txt`
 - **Start Command**: `python app.py`
 - **Root Directory**: `/web_app`
-
+## Static Page Deployemnt
+- **Live Demo**: [React js static page of mineral-targeting-result](https://mineral-targeting-static.onrender.com/)
 ## Datasets
 This project utilizes the following datasets provided by GSI on AIKosh:
 - Multi-Layer Geological Map of Karnataka and Andhra Pradesh (25K & 50K Scale)
@@ -53,6 +55,7 @@ Additional data: `NGCM-Stream-Sediment-Analysis-Updated.xlsx` (processed and inc
 ## Submission for IndiaAI Hackathon 2025
 - **Source Code URL**: [https://github.com/surajpandey111/mineral-targeting-2025](https://github.com/surajpandey111/mineral-targeting-2025)
 - **Live URL**: [https://mineral-targeting-2025.onrender.com/](https://mineral-targeting-2025.onrender.com/)
+- - **Live Demo**: [React js static page of mineral-targeting-result](https://mineral-targeting-static.onrender.com/)
 - **Project Report**: Included as `submission_report.txt` in the repository.
 - **Submission Deadline**: 12th May 2025
 - **Contact**: Email `fellow3.gpai-india@meity.gov.in` or `sudheer.reddy@meity.gov.in` with subject "Queries for IndiaAI Hackathon on Mineral Targeting - Suraj Kumar Pandey "
