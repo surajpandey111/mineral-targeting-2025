@@ -154,7 +154,7 @@ Paszke, A., et al. (2019). PyTorch: An Imperative Style, High-Performance Deep L
 
 Contact
 
-Authors: Suraj Kumar Pandey, B.K. Tripathi
+Authors: Suraj Kumar Pandey, Prof.B.K. Tripathi
 Email: worldforensic@gmail.com
 Phone: +917488723028
 
