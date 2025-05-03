@@ -51,7 +51,6 @@ Additional data: `NGCM-Stream-Sediment-Analysis-Updated.xlsx` (processed and inc
 ## Credits
 - **Developed by**: Suraj Kumar Pandey
 - **Collaboration**: IndiaAI and Geological Survey of India (GSI)
-- **License**: MIT License
 
 ## Submission for IndiaAI Hackathon 2025
 - **Source Code URL**: [https://github.com/surajpandey111/mineral-targeting-2025](https://github.com/surajpandey111/mineral-targeting-2025)
