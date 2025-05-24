@@ -8,9 +8,9 @@ Second Approach: Used a single NGCM dataset with a Random Forest Regressor (RFR)
 Both approaches outperformed a 20% random baseline by fourfold, identifying 501 high-potential locations per mineral, with results visualized through 3D/2D scatter plots, heatmaps, and anomaly detection.
 Repository Structure
 
-Main Repository: https://github.com/surajpandey111/mineral-targeting-2025Contains code, datasets, models, and visualizations for the First Approach.
-RFR-NGCM Repository: https://github.com/surajpandey111/mineral-targeting-2025/tree/main/RFRngcmContains code and deployment for the Second Approach.
-Static Site Repository: https://github.com/surajpandey111/mineral-targeting-staticHosts the static React site deployment.
+Main Repository: https://github.com/surajpandey111/mineral-targeting-2025 Contains code, datasets, models, and visualizations for the First Approach.
+RFR-NGCM Repository: https://github.com/surajpandey111/mineral-targeting-2025/tree/main/RFRngcm Contains code and deployment for the Second Approach.
+Static Site Repository: https://github.com/surajpandey111/mineral-targeting-static Hosts the static React site deployment.
 
 Methodology
 First Approach: Multi-Dataset with Seven ML/AI Models
