@@ -11,12 +11,24 @@
     <div class="welcome-container">
         <header>
             <h1>Welcome to Mineral Targeting 2025</h1>
-            <div class="developer-section">
-                <img src="{{ url_for('static', filename='suraj.jpg') }}" alt="Suraj Kumar Pandey" class="developer-photo">
-                <h2>Developed by: Suraj Kumar Pandey</h2>
-                <p>Role: Developer / Scientist / Student</p>
+
+            <div class="developer-row">
+                <div class="developer-section developer-highlight">
+                    <img src="{{ url_for('static', filename='suraj.jpg') }}" alt="Suraj Kumar Pandey" class="developer-photo">
+                    <h2>Lead Developer: Suraj Kumar Pandey</h2>
+                    <p>Role: Founder • Scientist • Student Innovator</p>
+                </div>
+
+                <div class="developer-section chief-patron">
+                    <img src="{{ url_for('static', filename='bktripathi.png') }}" alt="Prof. B.K. Tripathi" class="developer-photo">
+                    <h2>Honorary Chief Patron</h2>
+                    <p><strong>Prof. B.K. Tripathi</strong></p>
+                    <p>Director, Rajkiya Engineering College Azamgarh</p>
+                    <p>Institutional Endorsement & Strategic Project Guidance</p>
+                </div>
             </div>
         </header>
+
         <section class="hackathon-info">
             <h3>About IndiaAI Hackathon</h3>
             <p>
@@ -25,6 +37,7 @@
                 in mineral resource exploration. Together, we are shaping a sustainable future with cutting-edge solutions!
             </p>
         </section>
+
         <a href="/predict" class="btn">Explore Predictions</a>
     </div>
 </body>
